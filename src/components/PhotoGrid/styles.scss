@@ -1,0 +1,13 @@
+.PhotoGrid {
+  padding: 0.5rem 1rem;
+  text-align: center;
+
+  &__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  &__cropped-photo {
+    margin: 0.125rem;
+  }
+}
