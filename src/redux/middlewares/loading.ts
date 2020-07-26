@@ -1,7 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { signIn } from "../slices/authSlice";
 import { loading } from "../slices/appSlice";
-import { loadAllPictures } from "../slices/loadPicturesSlice";
+import { loadPictures } from "../slices/loadPicturesSlice";
 
 export const loadingHandler: Middleware = ({ dispatch }) => (next) => (action) => {
   const result = next(action);
@@ -10,7 +10,7 @@ export const loadingHandler: Middleware = ({ dispatch }) => (next) => (action) =
     case signIn.pending.type:
       dispatch(loading(true));
       break;
-    case loadAllPictures.pending.type:
+    case loadPictures.pending.type:
       dispatch(loading(true));
       break;
     case signIn.rejected.type:
@@ -19,10 +19,10 @@ export const loadingHandler: Middleware = ({ dispatch }) => (next) => (action) =
     case signIn.fulfilled.type:
       dispatch(loading(false));
       break;
-    case loadAllPictures.rejected.type:
+    case loadPictures.rejected.type:
       dispatch(loading(false));
       break;
-    case loadAllPictures.fulfilled.type:
+    case loadPictures.fulfilled.type:
       dispatch(loading(false));
       break;
   }

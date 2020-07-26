@@ -1,7 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { signIn } from "../slices/authSlice";
 import { errorMessage } from "../slices/appSlice";
-import { loadAllPictures } from "../slices/loadPicturesSlice";
+import { loadPictures } from "../slices/loadPicturesSlice";
 
 export const errorHandler: Middleware = ({ dispatch }) => (next) => (action) => {
   const result = next(action);
@@ -10,7 +10,7 @@ export const errorHandler: Middleware = ({ dispatch }) => (next) => (action) => 
     case signIn.pending.type:
       dispatch(errorMessage(""));
       break;
-    case loadAllPictures.pending.type:
+    case loadPictures.pending.type:
       dispatch(errorMessage(""));
       break;
     case signIn.rejected.type:
@@ -19,10 +19,10 @@ export const errorHandler: Middleware = ({ dispatch }) => (next) => (action) => 
     case signIn.fulfilled.type:
       dispatch(errorMessage(""));
       break;
-    case loadAllPictures.rejected.type:
+    case loadPictures.rejected.type:
       dispatch(errorMessage("Failed to load pictures"));
       break;
-    case loadAllPictures.fulfilled.type:
+    case loadPictures.fulfilled.type:
       dispatch(errorMessage(""));
       break;
   }

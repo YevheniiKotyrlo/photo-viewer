@@ -1,0 +1,24 @@
+.PageNavigation {
+  list-style: none;
+  display: flex;
+  padding: 1rem 2rem;
+  margin: 0;
+  justify-content: center;
+  text-align: center;
+
+  &__page {
+    background-color: aquamarine;
+    border-radius: 100%;
+    margin: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    cursor: pointer;
+    transition: background-color 0.33s ease;
+
+    &:hover,
+    &focus {
+      background-color: darken(aquamarine, 20%);
+    }
+  }
+}

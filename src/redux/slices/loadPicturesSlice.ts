@@ -17,6 +17,7 @@ interface PicturesState {
   pictures: Array<PictureState>;
   page: 1;
   pageCount: number;
+  status?: string;
 }
 
 const initialState: PicturesState = {
@@ -35,14 +36,14 @@ const initialState: PicturesState = {
   fullPicture: "https://dummyimage.com/600x400/000/fff",
 }];*/
 
-const loadAllPictures = createAsyncThunk("pictures/loadAll", async (data, thunkAPI) => {
+const loadPictures = createAsyncThunk<PicturesState, number>("pictures/loadAll", async (page = 1, thunkAPI) => {
   const { auth, token } = (thunkAPI.getState() as RootState).auth;
 
   if (!auth) {
     throw new Error("You need to get Auth first!");
   }
 
-  return await getRequest(`${apiUrl}/images`, token).then((json) => {
+  return await getRequest(`${apiUrl}/images?page=${page}`, token).then((json) => {
     return json;
   });
 });
@@ -58,10 +59,12 @@ const picturesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loadAllPictures.fulfilled, (state, action) => {
+    builder.addCase(loadPictures.fulfilled, (state, action) => {
       let newPictures: Array<PictureState>;
       try {
         newPictures = action.payload.pictures.map(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           (picture: PictureState & { cropped_picture: string; full_picture: string }) => {
             const croppedPicture = picture.cropped_picture;
             const fullPicture = picture.full_picture;
@@ -82,5 +85,5 @@ const picturesSlice = createSlice({
   },
 });
 
-export { loadAllPictures };
+export { loadPictures };
 export default picturesSlice.reducer;

@@ -4,6 +4,6 @@ import { render } from "@testing-library/react";
 
 test("app a have name", () => {
   const { getByText } = render(<App />);
-  const appName = getByText(/Implexis/i);
+  const appName = getByText(/React Photo Viewer/i);
   expect(appName).toBeInTheDocument();
 });
