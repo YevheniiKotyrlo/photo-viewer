@@ -38,6 +38,9 @@ body {
 }
 
 .App {
+  position: relative;
+  flex: 1;
+
   &__title {
     text-align: center;
     font-family: "Roboto", sans-serif;

@@ -1,33 +1,36 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import classNames from "classnames";
 import styles from "./styles.scss";
 import { PhotoGrid } from "../PhotoGrid";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { signIn, signOut } from "redux/slices/authSlice";
+import { signIn, signOut } from "../../redux/slices/authSlice";
+import { RootState } from "../../redux";
+import { CustomError } from "../../components/CustomError";
+import { Loader } from "../../components/Loader";
 
 const cssModule = classNames.bind(styles);
 
 export const App = (): JSX.Element => {
-  // const [apiKey, setApiKey] = useState<string>("23567b218376f79d9415");
-
-  // @ts-ignore
-  const token = useSelector(({ auth }) => auth.token, shallowEqual);
-  // @ts-ignore
-  const auth = useSelector(({ auth }) => auth.auth, shallowEqual);
-  // @ts-ignore
-  const error = useSelector(({ auth }) => auth.error, shallowEqual);
   const dispatch = useDispatch();
   const login = useCallback(() => dispatch(signIn()), [dispatch]);
   const logout = useCallback(() => dispatch(signOut()), [dispatch]);
 
+  const loading = useSelector(({ app }: RootState) => app.loading, shallowEqual);
+  const error = useSelector(({ app }: RootState) => app.error, shallowEqual);
+
+  useEffect(() => {
+    dispatch(signIn());
+  }, [dispatch]);
+
   return (
-    <div>
+    <div className={cssModule("App")}>
       <h1 className={cssModule("App__title")}>React Photo Viewer</h1>
-      {token}
-      {auth}
-      {error}
+
       <button onClick={login}>Login</button>
       <button onClick={logout}>Logout</button>
+
+      {error.hasError && <CustomError errorMessage={error.data.message} />}
+      {loading && <Loader />}
       <PhotoGrid />
     </div>
   );

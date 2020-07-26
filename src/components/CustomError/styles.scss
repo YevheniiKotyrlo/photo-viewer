@@ -1,0 +1,16 @@
+.CustomError {
+  background-color: #bfbfbf;
+  border: 2px solid #820000;
+  padding: 0.75rem 2.75rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border-radius: 5px;
+  z-index: 50;
+
+  &__message {
+    color: #ff0000;
+    margin: 0;
+    padding: 0;
+  }
+}

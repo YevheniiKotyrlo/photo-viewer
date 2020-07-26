@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiUrl } from "../../config";
 import { getRequest } from "../../api/getRequest";
+import { RootState } from "../index";
 
 interface PictureState {
   id: string;
@@ -12,19 +13,15 @@ interface PictureState {
 }
 
 interface PicturesState {
-  error: boolean;
   hasMore: boolean;
   pictures: Array<PictureState>;
-  loading: boolean;
   page: 1;
   pageCount: number;
 }
 
-const picturesState: PicturesState = {
-  error: false,
+const initialState: PicturesState = {
   hasMore: false,
   pictures: [],
-  loading: false,
   page: 1,
   pageCount: 0,
 };
@@ -38,10 +35,8 @@ const picturesState: PicturesState = {
   fullPicture: "https://dummyimage.com/600x400/000/fff",
 }];*/
 
-// First, create the thunk
 const loadAllPictures = createAsyncThunk("pictures/loadAll", async (data, thunkAPI) => {
-  // @ts-ignore
-  const { auth, token } = thunkAPI.getState().auth;
+  const { auth, token } = (thunkAPI.getState() as RootState).auth;
 
   if (!auth) {
     throw new Error("You need to get Auth first!");
@@ -52,27 +47,40 @@ const loadAllPictures = createAsyncThunk("pictures/loadAll", async (data, thunkA
   });
 });
 
+const name = "pictures";
+
 const picturesSlice = createSlice({
-  name: "pictures",
-  initialState: picturesState,
+  name,
+  initialState,
   reducers: {
-    removeState() {
-      return picturesState;
+    resetImages() {
+      return initialState;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loadAllPictures.pending, (state, action) => {
-      return { ...state, error: false, loading: true };
-    });
     builder.addCase(loadAllPictures.fulfilled, (state, action) => {
-      return { ...state, ...{ pictures: action.payload.pictures }, loading: false };
-    });
-    builder.addCase(loadAllPictures.rejected, (state, action) => {
-      return { ...state, error: true, loading: false };
+      let newPictures: Array<PictureState>;
+      try {
+        newPictures = action.payload.pictures.map(
+          (picture: PictureState & { cropped_picture: string; full_picture: string }) => {
+            const croppedPicture = picture.cropped_picture;
+            const fullPicture = picture.full_picture;
+            delete picture.cropped_picture;
+            delete picture.full_picture;
+
+            return { ...picture, croppedPicture, fullPicture };
+          },
+        );
+      } catch (e) {
+        newPictures = [];
+        console.error("Error while trying to parse pictures!", e);
+      }
+      console.log({ ...state, ...action.payload, ...{ pictures: newPictures } });
+
+      return { ...state, ...action.payload, ...{ pictures: newPictures } };
     });
   },
 });
 
-export const { removeState } = picturesSlice.actions;
 export { loadAllPictures };
 export default picturesSlice.reducer;

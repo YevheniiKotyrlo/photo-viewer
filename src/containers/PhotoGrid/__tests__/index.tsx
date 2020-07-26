@@ -1,5 +1,5 @@
 import React from "react";
-import { App } from "../";
+import { App } from "../index";
 import { render } from "@testing-library/react";
 
 test("app a have name", () => {

@@ -5,18 +5,13 @@ import { apiKey, apiUrl } from "../../config";
 interface AuthState {
   auth: boolean;
   token: string;
-  error: boolean;
-  loading: boolean;
 }
 
-const authState: AuthState = {
+const initialState: AuthState = {
   auth: false,
   token: "",
-  error: false,
-  loading: false,
 };
 
-// First, create the thunk
 const signIn = createAsyncThunk("auth/signIn", async () => {
   const data = {
     apiKey,
@@ -30,36 +25,37 @@ const signIn = createAsyncThunk("auth/signIn", async () => {
       };
     } else {
       return {
-        error: true,
+        auth: false,
+        token: "",
       };
     }
   });
 });
 
+const name = "auth";
+
 const authSlice = createSlice({
-  name: "auth",
-  initialState: authState,
+  name,
+  initialState,
   reducers: {
     signOut() {
-      return authState;
+      return initialState;
     },
     updateApiKey(state, action) {
-      console.log(state, action);
+      state.token = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(signIn.pending, (state, action) => {
-      return { ...state, error: false, loading: true };
-    });
     builder.addCase(signIn.fulfilled, (state, action) => {
-      return { ...state, ...action.payload, loading: false };
+      state = action.payload;
+      return state;
     });
-    builder.addCase(signIn.rejected, (state, action) => {
-      return { ...state, error: true, loading: false };
+    builder.addCase(signIn.rejected, () => {
+      return initialState;
     });
   },
 });
 
-export const { signOut, updateApiKey } = authSlice.actions;
+export const { signOut } = authSlice.actions;
 export { signIn };
 export default authSlice.reducer;
