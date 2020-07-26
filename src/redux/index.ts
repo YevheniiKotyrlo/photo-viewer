@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import appReducer from "./slices/appSlice";
-import picturesReducer from "./slices/loadPicturesSlice";
+import picturesReducer from "./slices/picturesSlice";
 import { loggerHandler } from "./middlewares/logger";
 import { loadingHandler } from "./middlewares/loading";
 import { errorHandler } from "./middlewares/error";

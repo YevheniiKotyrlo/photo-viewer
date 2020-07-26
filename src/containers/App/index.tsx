@@ -8,7 +8,8 @@ import { RootState } from "../../redux";
 import { CustomError } from "../../components/CustomError";
 import { Loader } from "../../components/Loader";
 import { PageNavigation } from "../../components/PageNavigation";
-import { loadPictures } from "../../redux/slices/loadPicturesSlice";
+import { loadPictures } from "../../redux/slices/picturesSlice";
+import { PhotoPopup } from "../PhotoPopup";
 
 const cssModule = classNames.bind(styles);
 
@@ -17,7 +18,7 @@ export const App = (): JSX.Element => {
 
   const loading = useSelector(({ app }: RootState) => app.loading, shallowEqual);
   const error = useSelector(({ app }: RootState) => app.error, shallowEqual);
-  const pictures = useSelector(({ pictures }: RootState) => pictures, shallowEqual);
+  const { page, pageCount, active } = useSelector(({ pictures }: RootState) => pictures, shallowEqual);
 
   useEffect(() => {
     dispatch(signIn());
@@ -38,8 +39,8 @@ export const App = (): JSX.Element => {
       <h1 className={cssModule("App__title")}>React Photo Viewer</h1>
 
       <PhotoGrid />
-
-      <PageNavigation current={pictures.page} max={pictures.pageCount} updatePage={updatePage} />
+      {active && <PhotoPopup />}
+      <PageNavigation current={page} max={pageCount} updatePage={updatePage} />
     </div>
   );
 };
